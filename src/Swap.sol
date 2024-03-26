@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.24;
 
 import {AggregatorV3Interface} from "lib/chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {IERC20} from "./interface/IERC20.sol";
 
 contract Swap {
+    int256 public price;
     // interfaces
     IERC20 public daiTokenAddr;
     IERC20 public linkTokenAddr;
@@ -28,8 +29,13 @@ contract Swap {
         address _daiUsdPriceFeed
     ) {
         ethUsdPriceFeed = AggregatorV3Interface(_ethUsdPriceFeed);
+        // 0x694AA1769357215DE4FAC081bf1f309aDC325306
+
         linkUsdPriceFeed = AggregatorV3Interface(_linkUsdPriceFeed);
+        //0xc59E3633BAAC79493d908e63626716e204A45EdF
+
         daiUsdPriceFeed = AggregatorV3Interface(_daiUsdPriceFeed);
+        // 0x14866185B1962B63C3Ea9E03Bc1da838bab34C19
 
         daiTokenAddr = IERC20(daiAddress);
         linkTokenAddr = IERC20(linkAddress);
@@ -41,16 +47,16 @@ contract Swap {
      */
     function getChainlinkDataFeedLatestAnswer(
         AggregatorV3Interface priceFeed
-    ) public view returns (int) {
+    ) public returns (int answer_) {
         // prettier-ignore
         (
             /* uint80 roundID */,
-            int answer,
+            answer_,
             /*uint startedAt*/,
             /*uint timeStamp*/,
             /*uint80 answeredInRound*/
         ) = priceFeed.latestRoundData();
-        return answer;
+        price = answer_;
     }
 
     // swap ether for link
